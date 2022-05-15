@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Client</title>
+		<style>
+			* {
+				box-sizing: border-box;
+				margin: 0;
+				padding: 0;
+			}
+			html {
+				width: 100%;
+				height: 100%;
+			}
+			body {
+				width: 100%;
+				height: 100%;
+				/* background-color: red; */
+				/* display: flex; */
+				/* justify-content: center; */
+			}
+			#theDiv {
+				/* border: 1px solid red; */
+				width: 100%;
+				height: 100%;
+				display: flex;
+				justify-content: center;
+				align-items: flex-start;
+				background-color: black;
+			}
+			img {
+				/* margin: 5px; */
+				width: 100%;
+				height: 100%;
+				/* border: 3px solid yellow; */
+			}
+		</style>
+	</head>
+	<body>
+		<div id="theDiv">
+			<img src="" />
+		</div>
+		<script>
+			const img = document.querySelector('img');
+			const WS_URL = 'ws://192.168.2.18:1900';
+			const ws = new WebSocket(WS_URL);
+
+			let urlObject;
+			var i = 0;
+
+			ws.onopen = () => console.log(`Connected to ${WS_URL}`);
+
+			ws.onmessage = (message) => {
+				if (typeof message.data != 'string') {
+					console.log('data # string :', i);
+					i++;
+					const arrayBuffer = message.data;
+
+					if (urlObject) {
+						URL.revokeObjectURL(urlObject);
+					}
+
+					urlObject = URL.createObjectURL(new Blob([arrayBuffer]));
+
+					img.src = urlObject;
+				}
+			};
+		</script>
+	</body>
+</html>
